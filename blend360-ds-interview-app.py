@@ -107,18 +107,18 @@ last_dt = date.today() + timedelta(last_num_days)
 
 
 ###### Date filter
-df_interview_schedule['Assigned Date']= pd.to_datetime(df_interview_schedule['Assigned Date'], format='%Y-%m-%d').dt.date
+df_interview_schedule['Interview Date']= pd.to_datetime(df_interview_schedule['Interview Date'], format='%Y-%m-%d').dt.date
 #st.write(df_interview_schedule)
 
 
-filter_df = df_interview_schedule[df_interview_schedule['Assigned Date'] >= first_dt] 
-filter_df = filter_df[filter_df['Assigned Date'] <= last_dt] 
+filter_df = df_interview_schedule[df_interview_schedule['Interview Date'] >= first_dt] 
+filter_df = filter_df[filter_df['Interview Date'] <= last_dt] 
 #st.write(filter_df)
 
 
 
-#df = df_interview_schedule.drop(['Candidate', 'Hiring Manager','Assigned Date'], axis=1)
-df = filter_df.drop(['Candidate', 'Hiring Manager','Assigned Date'], axis=1)
+#df = df_interview_schedule.drop(['Candidate', 'Hiring Manager','Interview Date'], axis=1)
+df = filter_df.drop(['Candidate', 'Hiring Manager','Interview Date'], axis=1)
 
 
 #df = df.apply(pd.value_counts).fillna(0)
@@ -162,6 +162,11 @@ st.subheader('Select Interviewers (Max 8) for '+str(candidate_nm)+ ':')
 selected_interviewers = st.multiselect('The Intervewers are ranked by scheduled freq with the least freq on top:', df_full_freq.Interviewer)
 
 
+interview_dt = st.date_input("Interview Date",date.today())
+#st.write('Interview Date:', interview_dt)
+
+
+
 ##### Save selection
 num_interviewers =len(selected_interviewers)
 if(st.button("Update Panel")):
@@ -183,7 +188,7 @@ if(st.button("Update Panel")):
         
         filename = 'interview.csv'
         tempfile = NamedTemporaryFile(mode='w', delete=False)
-        fields = ['Candidate','Hiring Manager','Assigned Date','Panel #1','Panel #2','Panel #3','Panel #4','Panel #5','Panel #6','Panel #7','Panel #8']
+        fields = ['Candidate','Hiring Manager','Interview Date','Panel #1','Panel #2','Panel #3','Panel #4','Panel #5','Panel #6','Panel #7','Panel #8']
         
         #with open(r'interview.csv', 'a', newline='') as csvfile:
         with open(filename, 'r') as csvfile, tempfile:
@@ -193,9 +198,9 @@ if(st.button("Update Panel")):
             
             for row in reader:
                 if row['Candidate'] == str(candidate_nm):
-                    row['Assigned Date'], row['Panel #1'], row['Panel #2'], row['Panel #3'], row['Panel #4'], row['Panel #5'], row['Panel #6'], row['Panel #7'], row['Panel #8'] = date.today(), selected_interviewers[0], selected_interviewers[1], selected_interviewers[2], selected_interviewers[3], selected_interviewers[4], selected_interviewers[5], selected_interviewers[6], selected_interviewers[7]
+                    row['Interview Date'], row['Panel #1'], row['Panel #2'], row['Panel #3'], row['Panel #4'], row['Panel #5'], row['Panel #6'], row['Panel #7'], row['Panel #8'] = interview_dt, selected_interviewers[0], selected_interviewers[1], selected_interviewers[2], selected_interviewers[3], selected_interviewers[4], selected_interviewers[5], selected_interviewers[6], selected_interviewers[7]
                     
-                row = {'Candidate': row['Candidate'], 'Hiring Manager': row['Hiring Manager'], 'Assigned Date': row['Assigned Date'], 'Panel #1': row['Panel #1'], 'Panel #2': row['Panel #2'], 'Panel #3': row['Panel #3'], 'Panel #4': row['Panel #4'], 'Panel #5': row['Panel #5'], 'Panel #6': row['Panel #6'], 'Panel #7': row['Panel #7'], 'Panel #8': row['Panel #8']}
+                row = {'Candidate': row['Candidate'], 'Hiring Manager': row['Hiring Manager'], 'Interview Date': row['Interview Date'], 'Panel #1': row['Panel #1'], 'Panel #2': row['Panel #2'], 'Panel #3': row['Panel #3'], 'Panel #4': row['Panel #4'], 'Panel #5': row['Panel #5'], 'Panel #6': row['Panel #6'], 'Panel #7': row['Panel #7'], 'Panel #8': row['Panel #8']}
                 
                 writer.writerow(row)
             
